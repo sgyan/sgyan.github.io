@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"sgyan.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.22.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="写在前面以前感觉这种本地部署很麻烦，遇到问题需要搜索半天，当然对于一个极客来说，也是乐趣所在。不过这次虽然稍微走了一下弯路，但总体还算顺利。为什么要本地部署DeepSeek呢？首先是国内新闻的大幅度报道，作为国产模型的顶流，作为大模型发展的前言让我很想试试，把玩一下。其次现在DeepSeek APP限流很严重，很多时候无法使用，毫无使用体验可言。最重要的是，我司之前提供了一台GPU服务器，一直在空">
+<meta property="og:type" content="article">
+<meta property="og:title" content="本地部署DeepSeek R1 70B 记录">
+<meta property="og:url" content="https://sgyan.github.io/2025/02/15/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2DeepSeek-R1-70B-%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="澄光的博客">
+<meta property="og:description" content="写在前面以前感觉这种本地部署很麻烦，遇到问题需要搜索半天，当然对于一个极客来说，也是乐趣所在。不过这次虽然稍微走了一下弯路，但总体还算顺利。为什么要本地部署DeepSeek呢？首先是国内新闻的大幅度报道，作为国产模型的顶流，作为大模型发展的前言让我很想试试，把玩一下。其次现在DeepSeek APP限流很严重，很多时候无法使用，毫无使用体验可言。最重要的是，我司之前提供了一台GPU服务器，一直在空">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://sgyan.github.io/images/2025-02-151.png">
+<meta property="og:image" content="https://sgyan.github.io/images/2025-02-153.png">
+<meta property="og:image" content="https://sgyan.github.io/images/2025-02-152.png">
+<meta property="og:image" content="https://sgyan.github.io/images/2025-02-154.png">
+<meta property="og:image" content="https://sgyan.github.io/images/2025-02-155.png">
+<meta property="article:published_time" content="2025-02-15T09:03:05.000Z">
+<meta property="article:modified_time" content="2025-10-05T02:55:23.624Z">
+<meta property="article:author" content="澄光">
+<meta property="article:tag" content="LLM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://sgyan.github.io/images/2025-02-151.png">
+
+
+<link rel="canonical" href="https://sgyan.github.io/2025/02/15/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2DeepSeek-R1-70B-%E8%AE%B0%E5%BD%95/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://sgyan.github.io/2025/02/15/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2DeepSeek-R1-70B-%E8%AE%B0%E5%BD%95/","path":"2025/02/15/本地部署DeepSeek-R1-70B-记录/","title":"本地部署DeepSeek R1 70B 记录"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>本地部署DeepSeek R1 70B 记录 | 澄光的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">澄光的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Minimum afford for the short term, maximum for the long term.</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">服务器配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E6%AD%A5%E9%AA%A4"><span class="nav-number">3.</span> <span class="nav-text">部署步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85Docker"><span class="nav-number">3.1.</span> <span class="nav-text">1. 安装Docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%87%86%E5%A4%87ollama-docker"><span class="nav-number">3.2.</span> <span class="nav-text">2. 准备ollama docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%AE%89%E8%A3%85Page-Assist"><span class="nav-number">3.3.</span> <span class="nav-text">3. 安装Page Assist</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E9%83%A8%E7%BD%B2DeepSeek-R1-70B"><span class="nav-number">3.4.</span> <span class="nav-text">4. 部署DeepSeek R1 70B</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%89%93%E5%BC%80%E8%81%94%E7%BD%91%E5%8A%9F%E8%83%BD"><span class="nav-number">3.5.</span> <span class="nav-text">5. 打开联网功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%B5%8B%E8%AF%95"><span class="nav-number">3.6.</span> <span class="nav-text">6. 测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E8%B8%A9%E8%BF%87%E7%9A%84%E5%9D%91"><span class="nav-number">3.7.</span> <span class="nav-text">7. 踩过的坑</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">澄光</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sgyan.github.io/2025/02/15/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2DeepSeek-R1-70B-%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="澄光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="澄光的博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="本地部署DeepSeek R1 70B 记录 | 澄光的博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          本地部署DeepSeek R1 70B 记录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-02-15 17:03:05" itemprop="dateCreated datePublished" datetime="2025-02-15T17:03:05+08:00">2025-02-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-10-05 10:55:23" itemprop="dateModified" datetime="2025-10-05T10:55:23+08:00">2025-10-05</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>以前感觉这种本地部署很麻烦，遇到问题需要搜索半天，当然对于一个极客来说，也是乐趣所在。不过这次虽然稍微走了一下弯路，但总体还算顺利。为什么要本地部署DeepSeek呢？首先是国内新闻的大幅度报道，作为国产模型的顶流，作为大模型发展的前言让我很想试试，把玩一下。其次现在DeepSeek APP限流很严重，很多时候无法使用，毫无使用体验可言。最重要的是，我司之前提供了一台GPU服务器，一直在空闲。所以，我决定尝试一下本地部署DeepSeek R1 70B。</p>
+<h2 id="服务器配置"><a href="#服务器配置" class="headerlink" title="服务器配置"></a>服务器配置</h2><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>型号</th>
+<th>容量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CPU</td>
+<td>AMD Ryzen Threadripper 3960X</td>
+<td>24核 48线程</td>
+</tr>
+<tr>
+<td>内存</td>
+<td>Samsung 3200MT 32GB*8</td>
+<td>256GB</td>
+</tr>
+<tr>
+<td>GPU</td>
+<td>NVIDIA RTX A6000 48GB*2</td>
+<td>96GB</td>
+</tr>
+<tr>
+<td>硬盘</td>
+<td>PNY CS3030 2TB SSD</td>
+<td>2TB</td>
+</tr>
+<tr>
+<td>硬盘</td>
+<td>Micron 5210 MTFD</td>
+<td>2TB</td>
+</tr>
+<tr>
+<td>网络</td>
+<td>RTL8125</td>
+<td>2.5GbE</td>
+</tr>
+<tr>
+<td>系统</td>
+<td>Ubuntu 20.04.3 LTS</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>不得不感叹一下，作为一台debug server， 这配置绰绰有余了。</p>
+<h2 id="部署步骤"><a href="#部署步骤" class="headerlink" title="部署步骤"></a>部署步骤</h2><h3 id="1-安装Docker"><a href="#1-安装Docker" class="headerlink" title="1. 安装Docker"></a>1. 安装Docker</h3><p>之前安装1panel面板的时候已经安装好了，因此这里就不再赘述。</p>
+<h3 id="2-准备ollama-docker"><a href="#2-准备ollama-docker" class="headerlink" title="2. 准备ollama docker"></a>2. 准备ollama docker</h3><p>参考dockerhub ollama 部署docker的<a target="_blank" rel="noopener" href="https://hub.docker.com/r/ollama/ollama">官方文档</a>。</p>
+<p>Step1: Configure the repository</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey \</span><br><span class="line">    | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg</span><br><span class="line">curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list \</span><br><span class="line">    | sed &#x27;s#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g&#x27; \</span><br><span class="line">    | sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list</span><br><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure>
+
+<p>Step2: Install the NVIDIA Container Toolkit packages</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install -y nvidia-container-toolkit</span><br></pre></td></tr></table></figure>
+
+<p>Step3: Configure Docker to use Nvidia driver</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo nvidia-ctk runtime configure --runtime=docker</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+<p>Step4: Start the ollama container</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">  --gpus &#x27;&quot;device=0&quot;&#x27; \</span><br><span class="line">  -v ollama:/root/.ollama \</span><br><span class="line">  -p 11434:11434 \</span><br><span class="line">  -e OLLAMA_HOST=0.0.0.0 \</span><br><span class="line">  -e OLLAMA_ORIGINS=* \</span><br><span class="line">  -e CUDA_VISIBLE_DEVICES=0 \</span><br><span class="line">  --name ollama \</span><br><span class="line">  ollama/ollama</span><br></pre></td></tr></table></figure>
+<p>这里我只分配了gpu0 做 deepseek r1 的推理。</p>
+<h3 id="3-安装Page-Assist"><a href="#3-安装Page-Assist" class="headerlink" title="3. 安装Page Assist"></a>3. 安装Page Assist</h3><p>Page Assist 是一款开源的浏览器扩展程序，主要为本地 AI 模型提供直观的交互界面，让用户可以在任何网页上与本地 AI 模型进行对话和交互。<br><a target="_blank" rel="noopener" href="https://chromewebstore.google.com/detail/page-assist-%E6%9C%AC%E5%9C%B0-ai-%E6%A8%A1%E5%9E%8B%E7%9A%84-web/jfgfiigpkhlkbnfnbobbkinehhfdhndo">插件链接</a><br>现在只上架了chrome商店，我直接使用Edge打开商店进行了安装。</p>
+<h3 id="4-部署DeepSeek-R1-70B"><a href="#4-部署DeepSeek-R1-70B" class="headerlink" title="4. 部署DeepSeek R1 70B"></a>4. 部署DeepSeek R1 70B</h3><p>Step1: 打开Page Assist插件，点击右上角的设置按钮，选择ollama设置,输入ollama的地址，点击保存。<br><img src="/images/2025-02-151.png" alt="alt text"></p>
+<p>Step2：打开管理模型，点击添加新模型，输入模型名称：<code>deepseek-r1:70b</code></p>
+<p>ollama 支持的模型可以在这里查看：<a target="_blank" rel="noopener" href="https://ollama.com/search">ollama模型列表</a><br>为什么选择DeepSeek R1 70B呢？70B大概占用44GB的显存，这个配置刚好可以支持。<br><img src="/images/2025-02-153.png" alt="alt text"></p>
+<h3 id="5-打开联网功能"><a href="#5-打开联网功能" class="headerlink" title="5. 打开联网功能"></a>5. 打开联网功能</h3><p>不能联网的LLM都有很大的局限,我选择的是Google。<br><img src="/images/2025-02-152.png" alt="alt text"></p>
+<h3 id="6-测试"><a href="#6-测试" class="headerlink" title="6. 测试"></a>6. 测试</h3><p>可以愉快的玩耍了。<br><img src="/images/2025-02-154.png" alt="alt text"></p>
+<p>显存和显卡利用率：<br><img src="/images/2025-02-155.png" alt="alt text"></p>
+<h3 id="7-踩过的坑"><a href="#7-踩过的坑" class="headerlink" title="7. 踩过的坑"></a>7. 踩过的坑</h3><ol>
+<li><p>最开始想用 ollama+open webui 的思路，使用<br>cursor直接生成docker file，但是发现cursor 生成的webui 的下载链接一直没搞对，遂放弃。后来看webui官网文档，安装命令一键搞定。</p>
+</li>
+<li><p>在部署完成后发现 webui 的联网功能仅支持dockdockgo，剩下的需要填写api key。 申请key的时候，Google 需要外币信用卡，遂放弃。Bing的key申请一直不成功，也放弃。最后切换到了page assist插件。</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/LLM/" rel="tag"># LLM</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/02/04/%E5%86%8D%E8%A7%81-%E9%BE%99%E5%B9%B4/" rel="prev" title="再见 龙年">
+                  <i class="fa fa-angle-left"></i> 再见 龙年
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/06/17/%E5%AE%B6%E8%A3%85%E5%BF%83%E5%BE%97/" rel="next" title="家装心得">
+                  家装心得 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">澄光</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
