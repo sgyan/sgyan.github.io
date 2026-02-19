@@ -14,4 +14,4 @@ paths = "safe"
 external_links_target_blank = true
 
 [markdown.highlighting]
-theme = "base16-ocean-dark"
+theme = "dark-plus"
