@@ -1,6 +1,6 @@
 base_url = "https://sgyan.github.io"
 title = "澄光的博客"
-description = "记录生活与技术的点滴"
+description = "Minimum afford for the short term, maximum for the long term."
 theme = "minimal"
 default_language = "zh"
 compile_sass = true
