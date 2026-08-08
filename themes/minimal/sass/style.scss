@@ -14,6 +14,97 @@ body {
     line-height: 1.8;
 }
 
+// Password gate
+.password-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    background: var(--background);
+}
+
+.password-gate[hidden],
+.protected-content[hidden] {
+    display: none;
+}
+
+.password-card {
+    width: min(100%, 360px);
+    padding: 2rem;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--background);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+
+    h1 {
+        margin-bottom: 0.25rem;
+        font-size: 24px;
+    }
+
+    > p:not(.password-error) {
+        margin-bottom: 1.5rem;
+        color: var(--secondary);
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.4rem;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    input {
+        width: 100%;
+        padding: 0.7rem 0.8rem;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        color: var(--foreground);
+        background: var(--background);
+        font: inherit;
+
+        &:focus {
+            border-color: var(--accent-highlight);
+            outline: 2px solid rgba(61, 60, 186, 0.2);
+        }
+    }
+
+    button {
+        width: 100%;
+        padding: 0.7rem 1rem;
+        border: 0;
+        border-radius: 6px;
+        color: #ffffff;
+        background: var(--accent);
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+
+        &:hover {
+            background: var(--accent-highlight);
+        }
+
+        &:disabled {
+            cursor: wait;
+            opacity: 0.7;
+        }
+    }
+
+    noscript {
+        display: block;
+        margin-top: 1rem;
+        color: #a12020;
+        font-size: 14px;
+    }
+}
+
+.password-error {
+    min-height: 1.8rem;
+    color: #a12020;
+    font-size: 14px;
+}
+
 @media (max-width: 1200px) {
     body { padding: 3em 10%; }
 }

@@ -6,7 +6,30 @@
     <title>{% block title %}{{ config.title }}{% endblock title %}</title>
     <link rel="stylesheet" href="{{ get_url(path='style.css') }}">
 </head>
-<body>
-    {% block content %}{% endblock content %}
+<body class="auth-pending">
+    <section class="password-gate" id="password-gate" aria-labelledby="password-gate-title">
+        <form class="password-card" id="password-form">
+            <h1 id="password-gate-title">Protected site</h1>
+            <p>Enter the password to continue.</p>
+            <label for="site-password">Password</label>
+            <input
+                id="site-password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                required
+                autofocus
+            >
+            <p class="password-error" id="password-error" role="alert" aria-live="polite"></p>
+            <button id="password-submit" type="submit">Unlock</button>
+            <noscript>JavaScript is required to unlock this site.</noscript>
+        </form>
+    </section>
+
+    <div class="protected-content" id="protected-content" hidden>
+        {% block content %}{% endblock content %}
+    </div>
+
+    <script src="{{ get_url(path='auth.js') }}" defer></script>
 </body>
 </html>
