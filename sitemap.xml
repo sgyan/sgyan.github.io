@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://sgyan.github.io/</loc>
+    </url>
+    <url>
+        <loc>https://sgyan.github.io/posts/</loc>
+    </url>
+    <url>
+        <loc>https://sgyan.github.io/posts/再见-蛇年/</loc>
+        <lastmod>2026-02-18</lastmod>
+    </url>
+    <url>
+        <loc>https://sgyan.github.io/posts/再见-龙年/</loc>
+        <lastmod>2025-02-04</lastmod>
+    </url>
+    <url>
+        <loc>https://sgyan.github.io/posts/家装心得/</loc>
+        <lastmod>2025-06-17</lastmod>
+    </url>
+    <url>
+        <loc>https://sgyan.github.io/posts/我为什么买车/</loc>
+        <lastmod>2025-08-25</lastmod>
+    </url>
+    <url>
+        <loc>https://sgyan.github.io/posts/本地部署DeepSeek-R1-70B-记录/</loc>
+        <lastmod>2025-02-15</lastmod>
+    </url>
+</urlset>
